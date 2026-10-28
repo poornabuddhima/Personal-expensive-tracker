@@ -1,4 +1,3 @@
-// 1. Select DOM Elements
 const form = document.getElementById('transactionForm');
 const tableBody = document.getElementById('transactionTableBody');
 const totalIncomeEl = document.getElementById('totalIncome');
@@ -7,135 +6,202 @@ const currentBalanceEl = document.getElementById('currentBalance');
 const filterSelect = document.getElementById('filterType');
 const noTransactionsMsg = document.getElementById('noTransactions');
 
-// 2. State (Array to hold transactions)
 let transactions = [];
 
-// 3. Load Data from LocalStorage
 function loadTransactions() {
-    const storedData = localStorage.getItem('transactions');
+    let storedData = localStorage.getItem('transactions');
     if (storedData) {
         transactions = JSON.parse(storedData);
+        alert("✅ Previous transactions loaded successfully! (" + transactions.length + " records found)");
+    } else {
+        alert("ℹ️ Welcome! No previous transactions found. Start adding your income and expenses.");
     }
     renderTable();
     calculateTotals();
 }
 
-// 4. Save Data to LocalStorage
 function saveTransactions() {
     localStorage.setItem('transactions', JSON.stringify(transactions));
 }
 
-// 5. Add Transaction (Form Submit)
-form.addEventListener('submit', function(e) {
-    e.preventDefault(); // Prevent page refresh
+form.addEventListener('submit', function(event) {
+    event.preventDefault(); 
 
-    // Get values
-    const type = document.getElementById('type').value;
-    const description = document.getElementById('description').value;
-    const amount = parseFloat(document.getElementById('amount').value);
-    const category = document.getElementById('category').value;
-    const date = document.getElementById('date').value;
+    let type = document.getElementById('type').value;
+    let description = document.getElementById('description').value;
+    let amount = parseFloat(document.getElementById('amount').value);
+    let category = document.getElementById('category').value;
+    let date = document.getElementById('date').value;
 
-    // Validation (Amount > 0)
-    if (amount <= 0) {
-        alert("Amount must be greater than zero.");
+    if (description.trim() === "") {
+        alert("⚠️ Please enter a description.");
         return;
     }
 
-    // Create transaction object
-    const transaction = {
-        id: Date.now(), // Unique ID
-        type,
-        description,
-        amount,
-        category,
-        date
+    if (isNaN(amount) || amount <= 0) {
+        alert("⚠️ Amount must be greater than zero.");
+        return;
+    }
+
+    if (date === "") {
+        alert("⚠️ Please select a transaction date.");
+        return;
+    }
+
+    let transaction = {
+        id: Date.now(),
+        type: type,
+        description: description,
+        amount: amount,
+        category: category,
+        date: date
     };
 
-    // Add to array
     transactions.push(transaction);
     saveTransactions();
-    
-    // Reset form & update UI
+
     form.reset();
     renderTable();
     calculateTotals();
-    alert("Transaction added successfully!");
+
+    alert("✅ Transaction added successfully!\n\n" +
+          "Type: " + type + "\n" +
+          "Description: " + description + "\n" +
+          "Amount: LKR " + amount.toFixed(2) + "\n" +
+          "Category: " + category + "\n" +
+          "Date: " + date);
 });
 
-// 6. Render Table (Dynamic Table Update & Filter)
 function renderTable() {
-    tableBody.innerHTML = ''; // Clear table
-    const filterValue = filterSelect.value;
+    tableBody.innerHTML = ''; 
 
-    // Filter Logic
+    let filterValue = filterSelect.value;
     let filteredTransactions = transactions;
+
     if (filterValue !== 'All') {
-        filteredTransactions = transactions.filter(t => t.type === filterValue);
+        filteredTransactions = transactions.filter(function(t) {
+            return t.type === filterValue;
+        });
     }
 
-    // Show message if no data
     if (filteredTransactions.length === 0) {
         noTransactionsMsg.style.display = 'block';
     } else {
         noTransactionsMsg.style.display = 'none';
     }
 
-    // Loop & Display
-    filteredTransactions.forEach(t => {
-        const row = document.createElement('tr');
+    for (let i = 0; i < filteredTransactions.length; i++) {
+        let t = filteredTransactions[i];
+        let row = document.createElement('tr');
+
+        let badgeClass = '';
+        if (t.type === 'Income') {
+            badgeClass = 'bg-success';
+        } else {
+            badgeClass = 'bg-danger';
+        }
+
+        let amountSign = '';
+        let amountColor = '';
+        if (t.type === 'Income') {
+            amountSign = '+';
+            amountColor = 'green';
+        } else {
+            amountSign = '-';
+            amountColor = 'red';
+        }
+
         row.innerHTML = `
             <td>${t.date}</td>
             <td>${t.description}</td>
-            <td>
-                <span class="badge ${t.type === 'Income' ? 'bg-success' : 'bg-danger'}">
-                    ${t.type}
-                </span>
-            </td>
+            <td><span class="badge ${badgeClass}">${t.type}</span></td>
             <td>${t.category}</td>
-            <td class="${t.type === 'Income' ? 'text-success' : 'text-danger'}">
-                ${t.type === 'Income' ? '+' : '-'} LKR ${t.amount.toFixed(2)}
+            <td style="color: ${amountColor}; font-weight: bold;">
+                ${amountSign} LKR ${t.amount.toFixed(2)}
             </td>
             <td>
-                <button class="btn btn-sm btn-outline-danger" onclick="deleteTransaction(${t.id})">Delete</button>
+                <button class="btn btn-outline-danger" onclick="deleteTransaction(${t.id})">Delete</button>
             </td>
         `;
-        tableBody.appendChild(row);
-    });
-}
 
-// 7. Delete Transaction
-function deleteTransaction(id) {
-    if (confirm("Are you sure you want to delete this transaction?")) {
-        transactions = transactions.filter(t => t.id !== id);
-        saveTransactions();
-        renderTable();
-        calculateTotals();
+        tableBody.appendChild(row);
     }
 }
 
-// 8. Calculate Totals
+function deleteTransaction(id) {
+    let confirmDelete = confirm("🗑️ Are you sure you want to delete this transaction?\n\nThis action cannot be undone.");
+    
+    if (confirmDelete) {
+        let deletedDescription = "";
+        let deletedAmount = 0;
+        
+        for (let i = 0; i < transactions.length; i++) {
+            if (transactions[i].id === id) {
+                deletedDescription = transactions[i].description;
+                deletedAmount = transactions[i].amount;
+                break;
+            }
+        }
+
+        let newTransactions = [];
+        for (let i = 0; i < transactions.length; i++) {
+            if (transactions[i].id !== id) {
+                newTransactions.push(transactions[i]);
+            }
+        }
+        transactions = newTransactions;
+
+        saveTransactions();
+        renderTable();
+        calculateTotals();
+
+        alert("✅ Transaction deleted successfully!\n\n" +
+              "Deleted: " + deletedDescription + "\n" +
+              "Amount: LKR " + deletedAmount.toFixed(2));
+    } else {
+        alert("❌ Delete cancelled. Transaction was not removed.");
+    }
+}
+
 function calculateTotals() {
     let income = 0;
     let expenses = 0;
 
-    transactions.forEach(t => {
+    for (let i = 0; i < transactions.length; i++) {
+        let t = transactions[i];
         if (t.type === 'Income') {
-            income += t.amount;
+            income = income + t.amount;
         } else {
-            expenses += t.amount;
+            expenses = expenses + t.amount;
         }
-    });
+    }
 
-    const balance = income - expenses;
+    let balance = income - expenses;
 
-    totalIncomeEl.textContent = `LKR ${income.toFixed(2)}`;
-    totalExpensesEl.textContent = `LKR ${expenses.toFixed(2)}`;
-    currentBalanceEl.textContent = `LKR ${balance.toFixed(2)}`;
+    totalIncomeEl.innerHTML = 'LKR ' + income.toFixed(2);
+    totalExpensesEl.innerHTML = 'LKR ' + expenses.toFixed(2);
+    currentBalanceEl.innerHTML = 'LKR ' + balance.toFixed(2);
 }
 
-// 9. Filter Event Listener
-filterSelect.addEventListener('change', renderTable);
+filterSelect.addEventListener('change', function() {
+    let selectedFilter = filterSelect.value;
+    renderTable();
 
-// 10. Initialize App
+    if (selectedFilter === 'All') {
+        alert("📋 Showing ALL transactions.");
+    } else if (selectedFilter === 'Income') {
+        alert("💰 Showing INCOME transactions only.");
+    } else if (selectedFilter === 'Expense') {
+        alert("💸 Showing EXPENSE transactions only.");
+    }
+});
+
+const clearBtn = document.querySelector('button[type="reset"]');
+if (clearBtn) {
+    clearBtn.addEventListener('click', function() {
+        alert("🧹 Form cleared. All fields have been reset.");
+    });
+}
+
+alert("🚀 Personal Expense Tracker is starting...");
 loadTransactions();

@@ -1,32 +1,30 @@
-
 body {
-    background-color: lightgray; /* Color Name */
+    background-color: lightgray;
     font-family: Arial, sans-serif;
-    color: black; /* Color Name */
+    color: black; 
     margin: 0;
     padding: 0;
 }
 
-
 .navbar {
-    background-color: black; /* Color Name */
+    background-color: black; 
     padding: 15px 20px;
 }
 
 .navbar-brand {
-    color: white; /* Color Name */
+    color: white; 
     font-size: 22px;
     font-weight: bold;
 }
 
 h2 {
-    color: darkblue; /* Color Name */
+    color: darkblue; 
     margin-bottom: 5px;
     margin-top: 20px;
 }
 
 .text-muted {
-    color: gray; /* Color Name */
+    color: gray; 
     margin-bottom: 20px;
 }
 
@@ -37,32 +35,31 @@ h2 {
 }
 
 .card {
-    background-color: white; /* Color Name */
-    border: 1px solid gray; /* Color Name */
+    background-color: white; 
+    border: 1px solid gray; 
     border-radius: 8px;
     padding: 20px;
     margin-bottom: 20px;
-    text-align: center;
 }
 
 .card-header {
-    background-color: whitesmoke; /* Color Name */
+    background-color: whitesmoke; 
     border-bottom: 1px solid gray;
     padding: 15px;
     font-weight: bold;
-    color: darkblue; /* Color Name */
+    color: darkblue;
 }
 
 .text-success {
-    color: green; /* Color Name */
+    color: green; 
 }
 
 .text-danger {
-    color: red; /* Color Name */
+    color: red; 
 }
 
 .text-primary {
-    color: blue; /* Color Name */
+    color: blue; 
 }
 
 .card h3 {
@@ -80,7 +77,7 @@ label {
 input, select {
     width: 100%;
     padding: 10px;
-    border: 1px solid silver; /* Color Name */
+    border: 1px solid silver; 
     border-radius: 5px;
     margin-bottom: 15px;
     font-size: 14px;
@@ -88,11 +85,10 @@ input, select {
 }
 
 input:focus, select:focus {
-    border-color: blue; /* Color Name */
+    border-color: blue; 
     outline: none;
 }
 
-/* ===== 8. Buttons ===== */
 .btn {
     padding: 10px 20px;
     border: none;
@@ -103,12 +99,12 @@ input:focus, select:focus {
 }
 
 .btn-primary {
-    background-color: blue; /* Color Name */
-    color: white; /* Color Name */
+    background-color: blue; 
+    color: white; 
 }
 
 .btn-primary:hover {
-    background-color: darkblue; /* Color Name */
+    background-color: darkblue; 
 }
 
 .btn-outline-secondary {
@@ -135,7 +131,6 @@ input:focus, select:focus {
     color: white;
 }
 
-/* ===== 9. Table ===== */
 .table {
     width: 100%;
     border-collapse: collapse;
@@ -143,7 +138,7 @@ input:focus, select:focus {
 }
 
 .table thead th {
-    background-color: darkblue; /* Color Name */
+    background-color: darkblue;
     color: white;
     padding: 12px;
     text-align: left;
@@ -157,10 +152,9 @@ input:focus, select:focus {
 }
 
 .table tbody tr:hover {
-    background-color: lightgray; /* Color Name */
+    background-color: lightgray;
 }
 
-/* ===== 10. Badges (Income / Expense) ===== */
 .badge {
     padding: 5px 10px;
     border-radius: 20px;
@@ -170,14 +164,13 @@ input:focus, select:focus {
 }
 
 .bg-success {
-    background-color: green; /* Color Name */
+    background-color: green;
 }
 
 .bg-danger {
-    background-color: red; /* Color Name */
+    background-color: red;
 }
 
-/* ===== 11. Filter Select ===== */
 #filterType {
     width: auto;
     padding: 5px 10px;
@@ -186,7 +179,6 @@ input:focus, select:focus {
     margin-left: 10px;
 }
 
-/* ===== 12. No Transactions Message ===== */
 #noTransactions {
     text-align: center;
     color: gray;
@@ -194,7 +186,6 @@ input:focus, select:focus {
     font-style: italic;
 }
 
-/* ===== 13. Responsive Design ===== */
 @media (max-width: 768px) {
     .container {
         padding: 10px;
